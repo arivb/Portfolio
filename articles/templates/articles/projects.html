@@ -1,0 +1,73 @@
+{% extends 'articles/index.html' %}
+{% block content %}
+<section style="display:block; padding:10px; margin:10px;">
+<h1>Coding projects</h1>
+<pre class="prettify" style="background-color:lavenderblush; border:2px solid gray;">
+<h2 style="margin:20px;">First Project-Web Crawler</h2>
+    import sqlite3
+
+    import requests
+    from app import root
+    from tkinter import *
+    from bs4 import BeautifulSoup
+    db = sqlite3.connect("ariv.db")
+    cursor = db.cursor()
+    cursor.execute("Create table if not exists website (url,title,links,content)")
+    url = input("Enter a url: ")
+    if url=="":
+        url="https://www.youtube.com"
+    def get_name(url):
+        if 'www' in url:
+            name = url.split(".")
+            name = name[1]
+        else:
+            name = url.split("/")
+            name = name[2].split(".")
+            name = name[0]
+        return name
+    #print(get_name(url))
+    def extract_content(soup):
+        try:
+            title = soup.title.string
+        except:
+            title = "Null"
+        try:
+            rel = soup.find('link',{'rel':'canonical'})['href']
+        except:
+            rel = "Null"
+        try:
+            content = soup.text
+            content = content.replace('\n',"")
+        except:
+            content= "Null"
+    
+        return title, rel, content
+    urls=[]
+    urls.append(url)
+    def extract_links(soup):
+        links=soup.find_all("a")
+        for i in links:
+            if str(i.get("href")).startswith(url)and i.get("href") not in urls:
+                if ".jpg" in i.get("href") or ".png" in i.get("href") or ".pdf" in i.get("href"):
+                    continue
+                else:
+                    urls.append(i.get("href"))
+        return urls
+    def insert_data(datafromurl):
+        url,title,link,content= datafromurl
+        cursor.execute("insert into website (url,title,links,content) values(?,?,?,?) ",(url,title,link,content))
+        db.commit()
+    def main():
+        counter = 0
+        while counter<20:
+            text=(counter,"started crawling",urls[counter])
+            response=requests.get(urls[counter])
+            if response.status_code == 200:
+                soup =  BeautifulSoup(response.text,"html.parser")
+                links = extract_links(soup)
+                title,link,content= extract_content(soup)
+                insert_data((urls[counter],title,link,content))
+            counter+=1
+            output=Label(root, text = text).pack() 
+</pre></section>
+{% endblock %}

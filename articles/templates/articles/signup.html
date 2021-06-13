@@ -1,0 +1,17 @@
+{% extends 'articles/index.html' %}
+{% block content %}
+<center>
+    
+    <div style="width: 40rem ; height: 23rem; background-color: cadetblue;  font-size: medium ; margin: 10px; font-family:Verdana, Geneva, Tahoma, sans-serif;" class="card">
+        <h1 class="card-title" style ='font-size:x-large;'>Sign Up</h1>
+    <form method='post' >
+        {% csrf_token %}
+        <div class="col align-top">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    <p>already a user? <a href="login">login</a></p>
+    </div>
+</center>
+{% endblock %}

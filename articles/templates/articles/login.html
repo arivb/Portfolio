@@ -1,0 +1,18 @@
+{% extends 'articles/index.html' %}
+{% block content %}
+<center>
+    
+    <div style="width: 40rem ; height: 16rem; background-color: cadetblue;  font-size: medium ; margin: 10px; font-family:Verdana, Geneva, Tahoma, sans-serif;" class="card">
+        <h1 class="card-title" style="font-size: x-large;">Login</h1>
+    <form method='post' >
+        {% csrf_token %}
+        <div class="col align-top">
+            {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+</center>
+
+<!--add bootstrap styling in this form -->
+{% endblock %}
